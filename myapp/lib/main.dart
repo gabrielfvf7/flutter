@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Gerador de nome inicial',
         theme: ThemeData(
-          primaryColor: Colors.white,
+          primaryColor: Colors.blue,
         ),
         home: RandomWords(),
       );
@@ -21,7 +21,7 @@ class RandomWordsState extends State<RandomWords> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Gerador de nome"),
+        title: Text("Aplicativo teste"),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],
