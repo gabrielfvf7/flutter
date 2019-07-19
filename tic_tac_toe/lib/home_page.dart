@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/custom_dialog.dart';
 import 'package:tic_tac_toe/game_button.dart';
@@ -52,11 +54,37 @@ class _HomePageState extends State<HomePage> {
         bot.add(gb.id);
       }
       gb.enabled = false;
-      checkWinner();
+      int winner = checkWinner();
+      if (winner == -1) {
+        if (buttonsList.every((p) => p.text != "")) {
+          showDialog(
+            context: context,
+            builder: (_) => new CustomDialog("Game Tied", "Press the button to reset", resetGame)
+          );
+        } else {
+          activePlayer == 2 ? autoPlay() : null;
+        }
+      }
     });
   }
 
-  void checkWinner() {
+  void autoPlay() {
+    var emptyCells = new List();
+    var list = new List.generate(9, (i) => i+1);
+    for (var cellID in list) {
+      if (!(player.contains(cellID) || bot.contains(cellID))) {
+        emptyCells.add(cellID);
+      }
+    }
+
+    var r = new Random();
+    var randIndex = r.nextInt(emptyCells.length-1);
+    var cellID = emptyCells[randIndex];
+    int i = buttonsList.indexWhere((p) => p.id == cellID);
+    playGame(buttonsList[i]);
+  }
+
+  int checkWinner() {
     var winner = -1;
     if (player.contains(1) && player.contains(2) && player.contains(3)) {
       winner = 1;
@@ -133,6 +161,7 @@ class _HomePageState extends State<HomePage> {
                 "Press the button to reset", resetGame));
       }
     }
+    return winner;
   }
 
   void resetGame() {
