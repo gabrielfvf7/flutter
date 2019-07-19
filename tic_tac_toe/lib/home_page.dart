@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/custom_dialog.dart';
 import 'package:tic_tac_toe/game_button.dart';
 
 class HomePage extends StatefulWidget {
@@ -51,6 +52,93 @@ class _HomePageState extends State<HomePage> {
         bot.add(gb.id);
       }
       gb.enabled = false;
+      checkWinner();
+    });
+  }
+
+  void checkWinner() {
+    var winner = -1;
+    if (player.contains(1) && player.contains(2) && player.contains(3)) {
+      winner = 1;
+    }
+    if (bot.contains(1) && bot.contains(2) && bot.contains(3)) {
+      winner = 2;
+    }
+
+    // row 2
+    if (player.contains(4) && player.contains(5) && player.contains(6)) {
+      winner = 1;
+    }
+    if (bot.contains(4) && bot.contains(5) && bot.contains(6)) {
+      winner = 2;
+    }
+
+    // row 3
+    if (player.contains(7) && player.contains(8) && player.contains(9)) {
+      winner = 1;
+    }
+    if (bot.contains(7) && bot.contains(8) && bot.contains(9)) {
+      winner = 2;
+    }
+
+    // col 1
+    if (player.contains(1) && player.contains(4) && player.contains(7)) {
+      winner = 1;
+    }
+    if (bot.contains(1) && bot.contains(4) && bot.contains(7)) {
+      winner = 2;
+    }
+
+    // col 2
+    if (player.contains(2) && player.contains(5) && player.contains(8)) {
+      winner = 1;
+    }
+    if (bot.contains(2) && bot.contains(5) && bot.contains(8)) {
+      winner = 2;
+    }
+
+    // col 3
+    if (player.contains(3) && player.contains(6) && player.contains(9)) {
+      winner = 1;
+    }
+    if (bot.contains(3) && bot.contains(6) && bot.contains(9)) {
+      winner = 2;
+    }
+
+    //diagonal
+    if (player.contains(1) && player.contains(5) && player.contains(9)) {
+      winner = 1;
+    }
+    if (bot.contains(1) && bot.contains(5) && bot.contains(9)) {
+      winner = 2;
+    }
+
+    if (player.contains(3) && player.contains(5) && player.contains(7)) {
+      winner = 1;
+    }
+    if (bot.contains(3) && bot.contains(5) && bot.contains(7)) {
+      winner = 2;
+    }
+
+    if (winner != -1) {
+      if (winner == 1) {
+        showDialog(
+            context: context,
+            builder: (_) => new CustomDialog("Player 1 Won",
+                "Press the button to reset", resetGame));
+      } else {
+        showDialog(
+            context: context,
+            builder: (_) => new CustomDialog("Bot  Won",
+                "Press the button to reset", resetGame));
+      }
+    }
+  }
+
+  void resetGame() {
+    if (Navigator.canPop(context)) Navigator.pop(context);
+    setState(() {
+     buttonsList = doInit(); 
     });
   }
 
