@@ -150,32 +150,52 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         backgroundColor: Colors.blue,
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10.0),
-        gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 1.0,
-          crossAxisSpacing: 9.0,
-          mainAxisSpacing: 9.0,
-        ),
-        itemCount: buttonsList.length,
-        itemBuilder: (context, i) => new SizedBox(
-          width: 100.0,
-          height: 100.0,
-          child: new RaisedButton(
-            padding: const EdgeInsets.all(8.0),
-            onPressed: buttonsList[i].enabled?() => playGame(buttonsList[i]): null,
+      body: new Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          new Expanded(
+            child: new GridView.builder(
+              padding: const EdgeInsets.all(10.0),
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1.0,
+                crossAxisSpacing: 9.0,
+                mainAxisSpacing: 9.0,
+              ),
+              itemCount: buttonsList.length,
+              itemBuilder: (context, i) => new SizedBox(
+                width: 100.0,
+                height: 100.0,
+                child: new RaisedButton(
+                  padding: const EdgeInsets.all(8.0),
+                  onPressed: buttonsList[i].enabled?() => playGame(buttonsList[i]): null,
+                  child: new Text(
+                    buttonsList[i].text,
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  color: buttonsList[i].bg,
+                  disabledColor: buttonsList[i].bg,
+                ),
+              ),
+            ),
+          ),
+          new RaisedButton(
             child: new Text(
-              buttonsList[i].text,
+              "Reset",
               style: new TextStyle(
                 color: Colors.white,
                 fontSize: 20.0,
               ),
             ),
-            color: buttonsList[i].bg,
-            disabledColor: buttonsList[i].bg,
-          ),
-        ),
+            color: Colors.red,
+            padding: const EdgeInsets.all(20.0),
+            onPressed: resetGame,
+          )
+        ],
       ),
     );
   }
