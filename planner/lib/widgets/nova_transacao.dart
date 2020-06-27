@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 
-class NovaTransacao extends StatelessWidget {
+class NovaTransacao extends StatefulWidget {
   final Function addTransacao;
+
+  NovaTransacao(this.addTransacao);
+
+  @override
+  _NovaTransacaoState createState() => _NovaTransacaoState();
+}
+
+class _NovaTransacaoState extends State<NovaTransacao> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
 
-  NovaTransacao(this.addTransacao);
+  void submitData() {
+    final enteredTitle = titleController.text;
+    final enteredAmount = double.parse(amountController.text);
+    if (enteredTitle.isEmpty || enteredAmount <= 0) return;
+    widget.addTransacao(
+      titleController.text,
+      double.parse(amountController.text),
+    );
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +40,11 @@ class NovaTransacao extends StatelessWidget {
             TextField(
               decoration: InputDecoration(labelText: "Valor"),
               controller: amountController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => submitData(),
             ),
             FlatButton(
-              onPressed: () => addTransacao(
-                titleController.text,
-                double.parse(amountController.text),
-              ),
+              onPressed: submitData,
               child: Text("Adicionar"),
               textColor: Colors.purple,
             ),
