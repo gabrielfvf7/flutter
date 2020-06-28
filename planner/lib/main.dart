@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planner/widgets/chart.dart';
 import './models/transacao.dart';
 import './widgets/listaTransacao.dart';
 import './widgets/nova_transacao.dart';
@@ -11,6 +12,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       home: MyHomePage(),
+      theme: ThemeData(
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              headline6: TextStyle(
+                fontFamily: 'Open Sans',
+                fontSize: 10,
+              ),
+            ),
+      ),
     );
   }
 }
@@ -22,26 +32,38 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transacao> _transacoes = [
-    Transacao(
-      id: 't1',
-      title: 'Sapatos',
-      amount: 69.99,
-      date: DateTime.now(),
-    ),
-    Transacao(
-      id: 't2',
-      title: 'Hamburguer',
-      amount: 25.00,
-      date: DateTime.now(),
-    ),
+    // Transacao(
+    //   id: 't1',
+    //   title: 'Sapatos',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transacao(
+    //   id: 't2',
+    //   title: 'Hamburguer',
+    //   amount: 25.00,
+    //   date: DateTime.now(),
+    // ),
   ];
 
-  void _addTransacao(String title, double amount) {
+  List<Transacao> get _recentTransactions {
+    return _transacoes
+        .where(
+          (transacao) => transacao.date.isAfter(
+            DateTime.now().subtract(
+              Duration(days: 7),
+            ),
+          ),
+        )
+        .toList();
+  }
+
+  void _addTransacao(String title, double amount, DateTime chosenDate) {
     final novaTransacao = Transacao(
       id: DateTime.now().toString(),
       title: title,
       amount: amount,
-      date: DateTime.now(),
+      date: chosenDate,
     );
 
     setState(() {
@@ -61,11 +83,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _transacoes.removeWhere((element) => element.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text(
+          'Flutter App',
+        ),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add, color: Colors.white),
@@ -77,14 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Text("Chart"),
-                elevation: 5,
-              ),
-            ),
-            listaTransacao(_transacoes),
+            Chart(_recentTransactions),
+            listaTransacao(_transacoes, _deleteTransaction),
           ],
         ),
       ),

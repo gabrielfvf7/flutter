@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NovaTransacao extends StatefulWidget {
   final Function addTransacao;
@@ -12,16 +13,34 @@ class NovaTransacao extends StatefulWidget {
 class _NovaTransacaoState extends State<NovaTransacao> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
+  DateTime selectedDate;
 
   void submitData() {
     final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
-    if (enteredTitle.isEmpty || enteredAmount <= 0) return;
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || selectedDate == null)
+      return;
     widget.addTransacao(
       titleController.text,
       double.parse(amountController.text),
+      selectedDate,
     );
     Navigator.of(context).pop();
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime.now(),
+    ).then((value) => value != null
+        ? {
+            setState(() {
+              selectedDate = value;
+            })
+          }
+        : null);
   }
 
   @override
@@ -43,10 +62,35 @@ class _NovaTransacaoState extends State<NovaTransacao> {
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onSubmitted: (_) => submitData(),
             ),
-            FlatButton(
+            Container(
+              height: 70,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      selectedDate == null
+                          ? "No date chosen"
+                          : "Data escolhida: ${DateFormat("dd/MM/yyyy").format(selectedDate)}",
+                    ),
+                  ),
+                  FlatButton(
+                    textColor: Colors.purple,
+                    child: Text(
+                      "Choose Date",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: _presentDatePicker,
+                  ),
+                ],
+              ),
+            ),
+            RaisedButton(
               onPressed: submitData,
               child: Text("Adicionar"),
-              textColor: Colors.purple,
+              color: Colors.purple,
+              textColor: Colors.white,
             ),
           ],
         ),
