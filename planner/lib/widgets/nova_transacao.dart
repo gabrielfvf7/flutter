@@ -45,54 +45,61 @@ class _NovaTransacaoState extends State<NovaTransacao> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(labelText: "Título"),
-              controller: titleController,
-            ),
-            TextField(
-              decoration: InputDecoration(labelText: "Valor"),
-              controller: amountController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => submitData(),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      selectedDate == null
-                          ? "No date chosen"
-                          : "Data escolhida: ${DateFormat("dd/MM/yyyy").format(selectedDate)}",
-                    ),
-                  ),
-                  FlatButton(
-                    textColor: Colors.purple,
-                    child: Text(
-                      "Choose Date",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(labelText: "Título"),
+                controller: titleController,
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: "Valor"),
+                controller: amountController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) => submitData(),
+              ),
+              Container(
+                height: 70,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        selectedDate == null
+                            ? "No date chosen"
+                            : "Data escolhida: ${DateFormat("dd/MM/yyyy").format(selectedDate)}",
                       ),
                     ),
-                    onPressed: _presentDatePicker,
-                  ),
-                ],
+                    FlatButton(
+                      textColor: Colors.purple,
+                      child: Text(
+                        "Choose Date",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: _presentDatePicker,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              onPressed: submitData,
-              child: Text("Adicionar"),
-              color: Colors.purple,
-              textColor: Colors.white,
-            ),
-          ],
+              RaisedButton(
+                onPressed: submitData,
+                child: Text("Adicionar"),
+                color: Colors.purple,
+                textColor: Colors.white,
+              ),
+            ],
+          ),
         ),
       ),
     );

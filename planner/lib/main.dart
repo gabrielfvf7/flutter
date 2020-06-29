@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:planner/widgets/chart.dart';
+import 'package:flutter/services.dart';
+import './widgets/chart.dart';
 import './models/transacao.dart';
 import './widgets/listaTransacao.dart';
 import './widgets/nova_transacao.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  return runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -91,25 +99,41 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Flutter App',
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add, color: Colors.white),
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
+    final mediaQuery = MediaQuery.of(context);
+    final appBar = AppBar(
+      title: Text(
+        'Flutter App',
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Chart(_recentTransactions),
-            listaTransacao(_transacoes, _deleteTransaction),
-          ],
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add, color: Colors.white),
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+    );
+    return Scaffold(
+      appBar: appBar,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.7,
+                child: listaTransacao(_transacoes, _deleteTransaction),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
