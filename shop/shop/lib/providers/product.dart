@@ -19,8 +19,9 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite() async {
-    final url = 'https://shopapp-d2eca.firebaseio.com/products/$id.json';
+  Future<void> toggleFavorite(String token) async {
+    final url =
+        'https://shopapp-d2eca.firebaseio.com/products/$id.json?auth=$token';
     try {
       final response = await http.patch(url,
           body: json.encode({
