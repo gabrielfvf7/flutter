@@ -8,8 +8,9 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this._items, this.userId);
 
   List<Product> get items => [..._items];
 
@@ -48,15 +49,20 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString =
+        filterByUser ? '&orderBy="creatorId"&equalTo="$userId"' : '';
     final url =
-        'https://shopapp-d2eca.firebaseio.com/products.json?auth=$authToken';
+        'https://shopapp-d2eca.firebaseio.com/products.json?auth=$authToken$filterString';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       if (extractedData == null) {
         return;
       }
+      final favoriteResponse = await http.get(
+          'https://shopapp-d2eca.firebaseio.com/userFavorites/$userId.json?auth=$authToken');
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -65,7 +71,8 @@ class Products with ChangeNotifier {
           description: prodData['description'],
           price: prodData['price'],
           imageUrl: prodData['imageUrl'],
-          isFavorite: prodData['isFavorite'],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[prodId] ?? false,
         ));
       });
       _items = loadedProducts;
@@ -86,7 +93,7 @@ class Products with ChangeNotifier {
           'description': value.description,
           'imageUrl': value.imageUrl,
           'price': value.price,
-          'isFavorite': value.isFavorite,
+          'creatorId': userId,
         }),
       );
       final newProduct = Product(
