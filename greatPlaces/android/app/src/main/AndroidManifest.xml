@@ -5,10 +5,12 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
-    <application
+    <application    
         android:name="io.flutter.app.FlutterApplication"
         android:label="greatPlaces"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyDN4bTcis0eogUIHH3TmLzJ4w5Jl3kR5h0"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
