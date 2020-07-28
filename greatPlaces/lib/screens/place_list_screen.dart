@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:greatPlaces/providers/great_places.dart';
 import 'package:greatPlaces/screens/add_place_screen.dart';
+import 'package:greatPlaces/screens/place_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class PlacesListScreen extends StatelessWidget {
@@ -28,20 +29,26 @@ class PlacesListScreen extends StatelessWidget {
                     'Got no places yet, add some!',
                   ),
                 ),
-                builder: (ctx, greatPlacesData, child) =>
-                    greatPlacesData.items.length <= 0
-                        ? child
-                        : ListView.builder(
-                            itemCount: greatPlacesData.items.length,
-                            itemBuilder: (context, index) => ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: FileImage(
-                                    greatPlacesData.items[index].image),
-                              ),
-                              title: Text(greatPlacesData.items[index].title),
-                              onTap: () => null,
-                            ),
+                builder: (ctx, greatPlacesData, child) => greatPlacesData
+                            .items.length <=
+                        0
+                    ? child
+                    : ListView.builder(
+                        itemCount: greatPlacesData.items.length,
+                        itemBuilder: (context, index) => ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                FileImage(greatPlacesData.items[index].image),
                           ),
+                          title: Text(greatPlacesData.items[index].title),
+                          subtitle: Text(
+                              greatPlacesData.items[index].location.address),
+                          onTap: () => Navigator.of(context).pushNamed(
+                            PlaceDetailScreen.routeName,
+                            arguments: greatPlacesData.items[index].id,
+                          ),
+                        ),
+                      ),
               ),
       ),
     );

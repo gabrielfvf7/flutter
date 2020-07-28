@@ -5,6 +5,10 @@ import 'package:greatPlaces/screens/map_screen.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
+  final Function onSelectPlace;
+
+  LocationInput(this.onSelectPlace);
+
   @override
   _LocationInputState createState() => _LocationInputState();
 }
@@ -13,10 +17,19 @@ class _LocationInputState extends State<LocationInput> {
   String _previewImageUrl;
 
   Future<void> _getCurrentUserLocation() async {
-    final location = await Location().getLocation();
+    try {
+      final location = await Location().getLocation();
+      _showPreview(location.latitude, location.longitude);
+      widget.onSelectPlace(location.latitude, location.longitude);
+    } catch (error) {
+      return;
+    }
+  }
+
+  void _showPreview(double lat, double lng) {
     final staticMapImgUrl = LocationHelper.generateLocationPreviewImage(
-      latitude: location.latitude,
-      longitude: location.longitude,
+      latitude: lat,
+      longitude: lng,
     );
     setState(() => _previewImageUrl = staticMapImgUrl);
   }
@@ -28,9 +41,11 @@ class _LocationInputState extends State<LocationInput> {
         builder: (ctx) => MapScreen(isSelecting: true),
       ),
     );
+    _showPreview(selectedLocation.latitude, selectedLocation.longitude);
     if (selectedLocation == null) {
       return;
     }
+    widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
   @override
