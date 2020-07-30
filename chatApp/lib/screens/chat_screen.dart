@@ -1,36 +1,50 @@
+import 'package:chatApp/widgets/chat/messages.dart';
+import 'package:chatApp/widgets/chat/new_message.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-        stream: Firestore.instance
-            .collection('chats/1DRF384LNipDHeerdCsj/messages')
-            .snapshots(),
-        builder: (ctx, streamSnapshot) =>
-            streamSnapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : ListView.builder(
-                    itemCount: streamSnapshot.data.documents.length,
-                    itemBuilder: (ctx, index) => Container(
-                      padding: EdgeInsets.all(8),
-                      child: Text(streamSnapshot.data.documents[index]['text']),
-                    ),
+      appBar: AppBar(
+        title: Text('Flutter Chat'),
+        actions: <Widget>[
+          DropdownButton(
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).primaryIconTheme.color,
+            ),
+            items: [
+              DropdownMenuItem(
+                child: Container(
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.exit_to_app),
+                      SizedBox(height: 8),
+                      Text('Logout'),
+                    ],
                   ),
+                ),
+                value: 'logout',
+              ),
+            ],
+            onChanged: (itemIdentifier) {
+              if (itemIdentifier == 'logout') FirebaseAuth.instance.signOut();
+            },
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Firestore.instance
-              .collection('chats/1DRF384LNipDHeerdCsj/messages')
-              .add({
-            'text': 'Message added by clicking',
-          });
-        },
-        child: Icon(Icons.add),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Messages(),
+            ),
+            NewMessage(),
+          ],
+        ),
       ),
     );
   }

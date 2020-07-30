@@ -8,8 +8,9 @@ class AuthForm extends StatefulWidget {
     bool isLogin,
     BuildContext ctx,
   ) submitForm;
+  final bool _isLoading;
 
-  AuthForm(this.submitForm);
+  AuthForm(this.submitForm, this._isLoading);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -96,14 +97,26 @@ class _AuthFormState extends State<AuthForm> {
                   SizedBox(height: 12),
                   RaisedButton(
                     onPressed: _trySubmit,
-                    child: Text(_isLogin ? 'Login' : 'Singup'),
+                    child: widget._isLoading
+                        ? SizedBox(
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                  Colors.white),
+                              strokeWidth: 3.0,
+                            ),
+                            height: 15,
+                            width: 15,
+                          )
+                        : Text(_isLogin ? 'Login' : 'Singup'),
                   ),
-                  FlatButton(
-                    child: Text(
-                        _isLogin ? 'Create new account' : 'I have an account'),
-                    onPressed: () => setState(() => _isLogin = !_isLogin),
-                    textColor: Theme.of(context).primaryColor,
-                  ),
+                  if (!widget._isLoading)
+                    FlatButton(
+                      child: Text(_isLogin
+                          ? 'Create new account'
+                          : 'I have an account'),
+                      onPressed: () => setState(() => _isLogin = !_isLogin),
+                      textColor: Theme.of(context).primaryColor,
+                    ),
                 ],
               ),
             ),
